@@ -21,6 +21,7 @@ class Client(models.Model):
     postal_code=models.CharField(null=True, blank=True, max_length=10)
     phone_number=models.CharField(null=True, blank=True, max_length=100)
     email_address=models.EmailField(null=True, blank=True, max_length=100)
+    tax_number = models.CharField(null=True, blank=True, max_length=100)
 
 
     #Utility fields
