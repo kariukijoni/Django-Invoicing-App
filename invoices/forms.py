@@ -27,7 +27,7 @@ class UserLoginForm(forms.ModelForm):
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
-        fields = ['client_name', 'client_logo', 'address_line_1', 'province', 'postal_code', 'phone_number', 'email_address', 'tax_number']
+        fields = ['client_name', 'client_logo', 'address_line_1', 'province', 'postal_code', 'phone_number', 'email_address','tax_number']
 
 
 
@@ -45,7 +45,7 @@ class InvoiceForm(forms.ModelForm):
 
     class Meta:
         model = Invoice
-        fields = ['title', 'number', 'due_date', 'payment_terms', 'status', 'notes', 'client', 'product']
+        fields = ['title', 'number', 'due_date', 'payment_terms', 'status', 'notes', 'client_invoice', 'product_invoice']
 
 
 class SettingsForm(forms.ModelForm):
