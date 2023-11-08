@@ -70,7 +70,7 @@ class Product(models.Model):
 
 
     def __str__(self):
-        return '{} {}'.format(self.title, self.unique_id)
+        return f'{self.title} {self.unique_id}'
 
 
     def get_absolute_url(self):
@@ -82,9 +82,9 @@ class Product(models.Model):
             self.date_created = timezone.localtime(timezone.now())
         if self.unique_id is None:
             self.unique_id = str(uuid4()).split('-')[4]
-            self.slug = slugify('{} {}'.format(self.title, self.unique_id))
+            self.slug = slugify(f'{self.title} {self.unique_id}')
 
-        self.slug = slugify('{} {}'.format(self.title, self.unique_id))
+        self.slug = slugify(f'{self.title} {self.unique_id}')
         self.last_updated = timezone.localtime(timezone.now())
 
         super(Product, self).save(*args, **kwargs)
@@ -123,7 +123,7 @@ class Invoice(models.Model):
 
 
     def __str__(self):
-        return '{} {}'.format(self.title, self.unique_id)
+        return f'{self.title} {self.unique_id}'
 
 
     def get_absolute_url(self):
@@ -137,7 +137,7 @@ class Invoice(models.Model):
             self.unique_id = str(uuid4()).split('-')[4]
             self.slug = slugify()
 
-        self.slug = slugify('{} {}'.format(self.title, self.unique_id))
+        self.slug = slugify(f'{self.title} {self.unique_id}')
         self.last_updated = timezone.localtime(timezone.now())
 
         super(Invoice, self).save(*args, **kwargs)
@@ -170,7 +170,7 @@ class Settings(models.Model):
 
 
     def __str__(self):
-        return '{} {} {}'.format(self.client_name, self.province, self.unique_id)
+        return f'{self.client_name} {self.province} {self.unique_id}'
 
 
     def get_absolute_url(self):
@@ -182,9 +182,9 @@ class Settings(models.Model):
             self.date_created = timezone.localtime(timezone.now())
         if self.unique_id is None:
             self.unique_id = str(uuid4()).split('-')[4]
-            self.slug = slugify('{} {} {}'.format(self.client_name, self.province, self.unique_id))
+            self.slug = slugify(f'{self.client_name} {self.province} {self.unique_id}')
 
-        self.slug = slugify('{} {} {}'.format(self.client_name, self.province, self.unique_id))
+        self.slug = slugify(f'{self.client_name} {self.province} {self.unique_id}')
         self.last_updated = timezone.localtime(timezone.now())
 
         super(Settings, self).save(*args, **kwargs)
