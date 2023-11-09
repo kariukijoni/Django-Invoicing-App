@@ -143,6 +143,24 @@ def create_build_invoice(request,slug):
         }
 
         return render(request,'invoices/create-invoice.html',context)
+    
+    if request.method == 'POST':
+        prod_form=ProductForm(request.POST)
+        inv_form=InvoiceForm(request.POST,instance=invoice)
+
+        if prod_form.is_valid():
+            obj=prod_form.save(commit=False)
+
+            obj.invoice=invoice
+            obj.save()
+
+            messages.success(request,'Invoice Product Added Successfully')
+            return redirect('create-build-invoice',slug=slug)
+        else:
+            context={'prod_form':prod_form,
+                     'inv_form':inv_form}
+            messages.error(request,'Problem processing your request')
+            return render(request,'invoices/create-invoice.html',context)
 
     return render(request,'invoices/create-invoice.html',context)
 
