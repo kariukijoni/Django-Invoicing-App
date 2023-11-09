@@ -101,3 +101,48 @@ def logout(request):
     auth.logout(request)
     return redirect('login')
 
+@login_required
+def create_invoice(request):
+    # create a blank invoice
+    number='INV-'+str(uuid4()).split('-')[1]
+    new_invoice=Invoice.objects.create(number=number)
+    new_invoice.save()
+
+    invoice=Invoice.objects.get(number=number)
+
+    return redirect('create-build-invoice',slug=invoice.slug)  
+
+
+
+@login_required
+def create_build_invoice(request,slug):
+
+    # fetch invoice
+    try:
+        invoice=Invoice.objects.get(slug=slug)
+        pass
+    except:
+        messages.error(request,'Something went wrong')
+        return redirect('invoices')
+
+    # fetch all products related to invoice
+    products=Product.objects.filter(product_invoice=invoice)
+
+    context={
+        'invoice':invoice,
+        'products':products
+    }
+
+    if request.method=='GET':
+        prod_form=ProductForm()
+        inv_form=InvoiceForm(instance=invoice)
+
+        context={
+            'prod_form':prod_form,
+            'inv_form':inv_form
+        }
+
+        return render(request,'invoices/create-invoice.html',context)
+
+    return render(request,'invoices/create-invoice.html',context)
+
