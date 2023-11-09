@@ -51,6 +51,58 @@ class Client(models.Model):
 
         super(Client, self).save(*args, **kwargs)
 
+
+class Invoice(models.Model):
+    TERMS=[
+    ('14 days', '14 days'),
+    ('30 days', '30 days'),
+    ('60 days', '60 days'),
+    ]
+
+    STATUS=[
+    ('CURRENT', 'CURRENT'),
+    ('OVERDUE', 'OVERDUE'),
+    ('PAID', 'PAID'),
+    ]
+
+    title=models.CharField(null=True, blank=True, max_length=100)
+    number=models.CharField(null=True, blank=True, max_length=100)
+    due_date=models.DateField(null=True, blank=True)
+    payment_terms=models.CharField(choices=TERMS, default='14 days', max_length=100)
+    status=models.CharField(choices=STATUS, default='CURRENT', max_length=100)
+    notes=models.TextField(null=True, blank=True)
+
+    #RELATED fields
+    client_invoice=models.ForeignKey(Client, blank=True, null=True, on_delete=models.SET_NULL)
+
+    #Utility fields
+    unique_id=models.CharField(null=True, blank=True, max_length=100)
+    slug=models.SlugField(max_length=500, unique=True, blank=True, null=True)
+    date_created=models.DateTimeField(blank=True, null=True)
+    last_updated=models.DateTimeField(blank=True, null=True)
+
+
+    def __str__(self):
+        return f'{self.title} {self.unique_id}'
+
+
+    def get_absolute_url(self):
+        return reverse('invoice-detail', kwargs={'slug': self.slug})
+
+
+    def save(self, *args, **kwargs):
+        if self.date_created is None:
+            self.date_created=timezone.localtime(timezone.now())
+        if self.unique_id is None:
+            self.unique_id=str(uuid4()).split('-')[4]
+            self.slug=slugify()
+
+        self.slug=slugify(f'{self.title} {self.unique_id}')
+        self.last_updated=timezone.localtime(timezone.now())
+
+        super(Invoice, self).save(*args, **kwargs)
+
+
 class Product(models.Model):
     CURRENCY=[
     ('R', 'ZAR'),
@@ -62,6 +114,9 @@ class Product(models.Model):
     quantity=models.FloatField(null=True, blank=True)
     price=models.FloatField(null=True, blank=True)
     currency=models.CharField(choices=CURRENCY, default='R', max_length=100)
+
+    # Related fields
+    product_invoice=models.ForeignKey(Invoice, blank=True, null=True, on_delete=models.SET_NULL)
 
     #Utility fields
     unique_id=models.CharField(null=True, blank=True, max_length=100)
@@ -90,58 +145,6 @@ class Product(models.Model):
 
         super(Product, self).save(*args, **kwargs)
 
-
-
-class Invoice(models.Model):
-    TERMS=[
-    ('14 days', '14 days'),
-    ('30 days', '30 days'),
-    ('60 days', '60 days'),
-    ]
-
-    STATUS=[
-    ('CURRENT', 'CURRENT'),
-    ('OVERDUE', 'OVERDUE'),
-    ('PAID', 'PAID'),
-    ]
-
-    title=models.CharField(null=True, blank=True, max_length=100)
-    number=models.CharField(null=True, blank=True, max_length=100)
-    due_date=models.DateField(null=True, blank=True)
-    payment_terms=models.CharField(choices=TERMS, default='14 days', max_length=100)
-    status=models.CharField(choices=STATUS, default='CURRENT', max_length=100)
-    notes=models.TextField(null=True, blank=True)
-
-    #RELATED fields
-    client_invoice=models.ForeignKey(Client, blank=True, null=True, on_delete=models.SET_NULL)
-    product_invoice=models.ForeignKey(Product, blank=True, null=True, on_delete=models.SET_NULL)
-
-    #Utility fields
-    unique_id=models.CharField(null=True, blank=True, max_length=100)
-    slug=models.SlugField(max_length=500, unique=True, blank=True, null=True)
-    date_created=models.DateTimeField(blank=True, null=True)
-    last_updated=models.DateTimeField(blank=True, null=True)
-
-
-    def __str__(self):
-        return f'{self.title} {self.unique_id}'
-
-
-    def get_absolute_url(self):
-        return reverse('invoice-detail', kwargs={'slug': self.slug})
-
-
-    def save(self, *args, **kwargs):
-        if self.date_created is None:
-            self.date_created=timezone.localtime(timezone.now())
-        if self.unique_id is None:
-            self.unique_id=str(uuid4()).split('-')[4]
-            self.slug=slugify()
-
-        self.slug=slugify(f'{self.title} {self.unique_id}')
-        self.last_updated=timezone.localtime(timezone.now())
-
-        super(Invoice, self).save(*args, **kwargs)
 
 
 class Settings(models.Model):
