@@ -45,7 +45,7 @@ class InvoiceForm(forms.ModelForm):
 
     class Meta:
         model = Invoice
-        fields = ['title', 'number', 'due_date', 'payment_terms', 'status', 'notes', 'client_invoice', 'product_invoice']
+        fields = ['title', 'number', 'due_date', 'payment_terms', 'status', 'notes']
 
 
 class SettingsForm(forms.ModelForm):
