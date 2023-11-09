@@ -52,9 +52,3 @@ class SettingsForm(forms.ModelForm):
     class Meta:
         model = Settings
         fields = ['client_name', 'client_logo', 'address_line_1', 'province', 'postal_code', 'phone_number', 'email_address', 'tax_number']
-
-
-
-
-# <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-# <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
